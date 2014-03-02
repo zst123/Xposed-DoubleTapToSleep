@@ -1,0 +1,6 @@
+/bin
+/temp
+/gen
+proguard-project.txt
+project.properties
+.DS_Store
