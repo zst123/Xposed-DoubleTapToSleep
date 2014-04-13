@@ -19,15 +19,16 @@ public class XposedMod implements IXposedHookLoadPackage {
 			"/ROM:" + Build.DISPLAY + "):";
 	
 	static GestureDetector mDoubleTapGesture;
+	static boolean isIcsAndNewer;
 	
 	@Override
 	public void handleLoadPackage(LoadPackageParam lpp) throws Throwable {
 		if (!lpp.packageName.equals("com.android.systemui")) return;
+		isIcsAndNewer = Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
 		try {
-			final Class<?> classPhoneStatusBarView = XposedHelpers.findClass(
-					"com.android.systemui.statusbar.phone.PhoneStatusBarView", lpp.classLoader);
-			hook(classPhoneStatusBarView);
-			
+			hook(XposedHelpers.findClass(isIcsAndNewer ? 
+					"com.android.systemui.statusbar.phone.PhoneStatusBarView"
+					: "com.android.systemui.statusbar.StatusBarView", lpp.classLoader));
 		} catch (Throwable t) {
 			XposedBridge.log(LOG_TAG);
 			XposedBridge.log(t);
